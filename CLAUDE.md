@@ -33,6 +33,10 @@ Browser-based roguelike deckbuilder (Slay the Spire + Balatro + D&D dice). Playe
 - Ascension level passed as parameter to data functions (they don't import state)
 - Relic hook system: relics register effects on game events (onRoll, onEvaluate, onTakeDamage, etc.)
 - Operators sorted by PEMDAS group then rarity in UI displays
+- Per-act color theming via CSS custom property overrides (`setActTheme(act)` in main.js)
+- Screen transitions: sequential fade out → pause → fade in, with `transitioning` guard flag
+- Interactive events use `customRender(container, rng, state, onResult)` — state is passed as parameter since data files don't import GameState
+- Per-run stats tracked in `state.run.stats`, separate from lifetime `RunStats` in localStorage
 
 ## Game Structure
 - **3 Acts**, each with a branching map (DAG), unique monster tiers, and a boss
@@ -44,6 +48,8 @@ Browser-based roguelike deckbuilder (Slay the Spire + Balatro + D&D dice). Playe
 - **10 Ascension levels** with stacking difficulty modifiers
 - **Meta-progression**: Loadout unlocks derived from lifetime RunStats milestones
 - **Scoring combos**: Prime Time, Palindrome, Fibonacci, Perfect Square, All Dice, No Operators, The Answer (42), Century (100)
+- **32 Events**: gambling, equipment, cursed, NPC, environmental, meta/power, and interactive categories
+- **3 Act Themes**: Dungeon (blue-purple), Inferno (warm reds), Void (deep cosmic purples)
 
 ## Important Implementation Details
 - Combat conditions system (`js/data/conditions.js`): monsters get 0-3 random conditions that modify rules
@@ -52,3 +58,9 @@ Browser-based roguelike deckbuilder (Slay the Spire + Balatro + D&D dice). Playe
 - `generateShopStock()` accepts ascension for price gouging
 - Save/load auto-triggers after each map node completion
 - Give up button in HUD ends run early with confirmation dialog
+- Map canvas colors read from CSS variables (cached per `renderMap()` call) for act theming
+- `showScreen(name, options)` handles all screen transitions; `{ dramatic: true }` adds combat entry animation
+- Run summary (`showRunSummary(isWin)`) unifies victory and defeat screens with stats + build display
+- Combat defeat emits `combatDefeat` (not `requestNewRun`) so `recordLoss()` fires before summary
+- `incrementRunStat(key, amount)` and `setRunStatMax(key, value)` track per-run combat stats
+- Synth audio via Web Audio API (`js/utils/audio.js`) — no audio files needed
