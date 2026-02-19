@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Numgeon</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/combat.css">
+  <link rel="stylesheet" href="css/cards.css">
+  <link rel="stylesheet" href="css/map.css">
+  <link rel="stylesheet" href="css/screens.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://esm.sh/three@0.162.0",
+      "cannon-es": "https://esm.sh/cannon-es@0.20.0"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="app">
+    <!-- Player HUD (always visible during run) -->
+    <header id="player-hud" class="hud hidden"></header>
+
+    <!-- Screens -->
+    <main id="screen-container">
+      <div id="title-screen" class="screen active">
+        <div class="title-content">
+          <h1 class="game-title">NUMGEON</h1>
+          <p class="game-subtitle">A Mathematical Dungeon Crawler</p>
+          <button id="btn-new-run" class="btn btn-primary">New Run</button>
+        </div>
+      </div>
+
+      <div id="loadout-screen" class="screen hidden"></div>
+
+      <div id="map-screen" class="screen hidden">
+        <canvas id="map-canvas"></canvas>
+      </div>
+
+      <div id="combat-screen" class="screen hidden">
+        <div id="combat-top">
+          <div id="monster-area"></div>
+          <div id="expression-area"></div>
+        </div>
+        <div id="dice-area"></div>
+        <div id="operator-area"></div>
+      </div>
+
+      <div id="reward-screen" class="screen hidden"></div>
+      <div id="shop-screen" class="screen hidden"></div>
+      <div id="event-screen" class="screen hidden"></div>
+      <div id="rest-screen" class="screen hidden"></div>
+      <div id="game-over-screen" class="screen hidden"></div>
+    </main>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

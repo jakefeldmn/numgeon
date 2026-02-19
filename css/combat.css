@@ -1,0 +1,1028 @@
+#combat-screen {
+  padding: 12px;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+/* Two-column top layout: monster left, expression right */
+#combat-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  #combat-top {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Monster Area */
+#monster-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  background: var(--bg-mid);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.monster-art {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.monster-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent-red);
+}
+
+.monster-target {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--accent-gold);
+  font-family: var(--font-mono);
+}
+
+.monster-target-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.monster-hp-bar {
+  width: 200px;
+  height: 10px;
+  background: var(--bg-dark);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.monster-hp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-red), #ff6b6b);
+  transition: width 400ms ease;
+  border-radius: 5px;
+}
+
+/* Persistent monster attack dice display */
+.monster-atk-dice {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.monster-atk-dice-label {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.monster-atk-die-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--accent-red);
+  background: rgba(255, 74, 74, 0.08);
+  border: 1.5px solid rgba(255, 74, 74, 0.3);
+  border-radius: var(--radius-sm);
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.monster-atk-die-icon.active {
+  opacity: 1;
+  border-color: var(--accent-red);
+  background: rgba(255, 74, 74, 0.15);
+  animation: enemy-die-shake 0.1s infinite;
+  box-shadow: 0 0 8px rgba(255, 74, 74, 0.4);
+}
+
+/* Condition chips on monster */
+.condition-bar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.condition-chip {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  color: var(--accent-gold);
+  cursor: help;
+}
+
+.calc-cond-error {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-red);
+  padding: 2px 10px;
+  border-radius: 8px;
+  background: rgba(255, 74, 74, 0.1);
+  border: 1px solid rgba(255, 74, 74, 0.2);
+}
+
+/* Expression Area */
+#expression-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  background: var(--bg-mid);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+/* Calculator-style expression display */
+.calc-display {
+  width: 100%;
+  min-height: 70px;
+  padding: 12px 16px;
+  background: var(--bg-dark);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calc-expression {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.calc-placeholder {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  font-weight: 400;
+  font-family: var(--font-main);
+}
+
+.calc-token {
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+}
+
+.calc-token:hover {
+  background: rgba(255, 74, 74, 0.15);
+  text-decoration: line-through;
+}
+
+/* Drag-and-drop reordering */
+.calc-token[draggable="true"] {
+  cursor: grab;
+}
+
+.calc-token[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.calc-token.dragging {
+  opacity: 0.3;
+  text-decoration: none;
+}
+
+.calc-token.drag-over-left {
+  border-left: 3px solid var(--accent-blue);
+  text-decoration: none;
+  background: rgba(74, 158, 255, 0.1);
+}
+
+.calc-token.drag-over-right {
+  border-right: 3px solid var(--accent-blue);
+  text-decoration: none;
+  background: rgba(74, 158, 255, 0.1);
+}
+
+.calc-operator {
+  color: var(--accent-blue);
+}
+
+.calc-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.calc-result.valid .calc-equals {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--accent-green);
+}
+
+.calc-result.valid .calc-equals strong {
+  color: var(--accent-gold);
+  font-size: 1.5rem;
+}
+
+.calc-result.invalid .calc-equals {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.calc-hit {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+
+.calc-hit.exact {
+  color: var(--accent-gold);
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.calc-hit.over {
+  color: var(--accent-red);
+  background: rgba(255, 74, 74, 0.1);
+  border: 1px solid rgba(255, 74, 74, 0.2);
+}
+
+.calc-hit.under {
+  color: var(--accent-blue);
+  background: rgba(74, 158, 255, 0.1);
+  border: 1px solid rgba(74, 158, 255, 0.2);
+}
+
+/* Damage consequence preview */
+.calc-consequence {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 8px;
+  text-align: center;
+  width: 100%;
+}
+
+.calc-consequence.exact {
+  color: var(--accent-gold);
+  background: rgba(255, 215, 0, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.calc-consequence.near {
+  color: var(--accent-green);
+  background: rgba(74, 255, 128, 0.08);
+  border: 1px solid rgba(74, 255, 128, 0.2);
+}
+
+.calc-consequence.safe {
+  color: var(--accent-green);
+  background: rgba(74, 255, 128, 0.08);
+  border: 1px solid rgba(74, 255, 128, 0.2);
+}
+
+.calc-consequence.over {
+  color: var(--accent-red);
+  background: rgba(255, 74, 74, 0.08);
+  border: 1px solid rgba(255, 74, 74, 0.2);
+}
+
+.calc-consequence.under {
+  color: var(--accent-blue);
+  background: rgba(74, 158, 255, 0.08);
+  border: 1px solid rgba(74, 158, 255, 0.2);
+}
+
+.dice-hint {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.combo-preview-label {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.combo-total-mult {
+  font-family: var(--font-mono);
+  font-weight: 900;
+  font-size: 0.8rem;
+  color: var(--accent-gold);
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+}
+
+.expression-controls {
+  display: flex;
+  gap: 8px;
+}
+
+/* 3D Dice Container */
+#dice-3d-container {
+  width: 100%;
+  height: 180px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: radial-gradient(ellipse at center, #1a1a3a 0%, #0a0a1a 100%);
+  border: 1px solid var(--border-color);
+  position: relative;
+}
+
+#dice-3d-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#dice-3d-container.rolling {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 15px rgba(74, 158, 255, 0.15);
+}
+
+.dice-3d-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+/* Dice Area */
+#dice-area {
+  padding: 12px;
+  background: var(--bg-mid);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.dice-area-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.dice-area-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.dice-tray {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 4px 0 8px;
+}
+
+/* Die wrapper — holds the shaped die + overflow badges */
+.die-wrapper {
+  position: relative;
+  width: 62px;
+  height: 62px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* The shaped die itself — clip-path gives it N sides */
+.die {
+  width: 62px;
+  height: 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--die-bg, var(--bg-card));
+  clip-path: var(--die-shape);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+  position: relative;
+}
+
+/* Die shapes — based on real polyhedra faces */
+.die-d4  { --die-shape: polygon(50% 2%, 97% 95%, 3% 95%); }
+.die-d6  { --die-shape: polygon(8% 8%, 92% 8%, 92% 92%, 8% 92%); }
+.die-d8  { --die-shape: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+.die-d10 { --die-shape: polygon(50% 0%, 97.6% 34.5%, 79.4% 90.5%, 20.6% 90.5%, 2.4% 34.5%); }
+.die-d12 { --die-shape: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%); }
+.die-d20 { --die-shape: circle(50%); }
+
+/* Dice class background tints */
+.die-class-standard  { --die-bg: var(--bg-card); }
+.die-class-fibonacci { --die-bg: #163028; }
+.die-class-square    { --die-bg: #162840; }
+.die-class-prime     { --die-bg: #261640; }
+
+.die-wrapper:hover .die {
+  filter: brightness(1.3);
+  transform: translateY(-2px);
+}
+
+.die-wrapper.used {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.die-wrapper.held .die {
+  filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.4));
+}
+
+.die-value {
+  font-size: 1.3rem;
+  font-weight: 900;
+  font-family: var(--font-mono);
+  line-height: 1;
+}
+
+.die-type {
+  font-size: 0.55rem;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+
+/* Class badge — small colored label showing die class */
+.die-class-badge {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.5rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.die-class-badge.badge-fibonacci { background: #55efc4; color: #0a0a1a; }
+.die-class-badge.badge-square    { background: #74b9ff; color: #0a0a1a; }
+.die-class-badge.badge-prime     { background: #b44aff; color: #fff; }
+
+.die-wrapper.rolling {
+  animation: die-shake 0.1s infinite;
+}
+
+.die-wrapper.rolling .die {
+  filter: drop-shadow(0 0 8px rgba(74, 158, 255, 0.4));
+}
+
+.die-wrapper.rolling .die-value {
+  filter: blur(1px);
+}
+
+.die-wrapper.settled {
+  animation: die-land 0.3s ease-out;
+}
+
+@keyframes die-shake {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  25%  { transform: translate(-2px, 1px) rotate(-3deg); }
+  50%  { transform: translate(2px, -1px) rotate(2deg); }
+  75%  { transform: translate(-1px, -2px) rotate(-1deg); }
+  100% { transform: translate(1px, 2px) rotate(3deg); }
+}
+
+@keyframes die-land {
+  0%   { transform: scale(1.2) translateY(-5px); }
+  50%  { transform: scale(0.95) translateY(2px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.die-hold-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 0.55rem;
+  background: var(--accent-gold);
+  color: var(--bg-dark);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 700;
+  z-index: 2;
+}
+
+/* Operator Area */
+#operator-area {
+  padding: 12px;
+  background: var(--bg-mid);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.operator-area-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.operator-hand {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Combat Log */
+.combat-log {
+  max-height: 100px;
+  overflow-y: auto;
+  padding: 8px;
+  background: var(--bg-dark);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+.combat-log p {
+  margin: 2px 0;
+}
+
+.combat-log p.hit-exact {
+  color: var(--accent-gold);
+  font-weight: 700;
+}
+
+.combat-log p.hit-over {
+  color: var(--accent-red);
+}
+
+.combat-log p.hit-under {
+  color: var(--accent-blue);
+}
+
+.combat-log p.hit-near {
+  color: var(--accent-green);
+  font-weight: 700;
+}
+
+.combat-log p.hit-combo {
+  color: var(--accent-purple);
+  font-weight: 700;
+}
+
+/* Combo preview (shown while building expression) */
+.combo-preview {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.combo-preview-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--combo-color, var(--accent-gold));
+  background: color-mix(in srgb, var(--combo-color, var(--accent-gold)) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--combo-color, var(--accent-gold)) 30%, transparent);
+}
+
+/* Combo animation display (brief popups at top, non-blocking) */
+.combo-display {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 30;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
+
+.combo-display.fading {
+  opacity: 0;
+}
+
+.combo-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--combo-color, #ffd700);
+  background: rgba(10, 10, 26, 0.92);
+  border: 2px solid var(--combo-color, #ffd700);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--combo-color, #ffd700) 30%, transparent);
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  transition: all 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.combo-chip.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.combo-emoji {
+  font-size: 1.3rem;
+}
+
+.combo-name {
+  letter-spacing: 0.05em;
+}
+
+.combo-mult {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+
+/* Victory overlay combo summary */
+.result-combos {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.result-combo-chip {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.result-multiplier {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--accent-gold);
+  font-family: var(--font-mono);
+}
+
+/* Victory / Defeat overlays */
+.combat-result-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 26, 0.85);
+  gap: 16px;
+  z-index: 20;
+}
+
+.combat-result-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+}
+
+.combat-result-title.victory {
+  color: var(--accent-gold);
+}
+
+.combat-result-title.defeat {
+  color: var(--accent-red);
+}
+
+.combat-result-stats {
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.8;
+}
+
+/* Boss ability display */
+.boss-ability {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-red);
+  background: rgba(255, 74, 74, 0.1);
+  border: 1px solid rgba(255, 74, 74, 0.25);
+  border-radius: 8px;
+  padding: 4px 12px;
+  margin-top: 4px;
+  text-align: center;
+}
+
+/* Boss warning in expression preview */
+.calc-boss-warning {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ff6b6b;
+  padding: 2px 10px;
+  border-radius: 8px;
+  background: rgba(255, 74, 74, 0.15);
+  border: 1px solid rgba(255, 74, 74, 0.3);
+  animation: boss-warn-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes boss-warn-pulse {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
+/* Boss target reroll */
+.boss-reroll-btn {
+  margin-top: 6px;
+  background: var(--accent-purple) !important;
+  border-color: var(--accent-purple) !important;
+  color: #fff !important;
+  font-size: 0.8rem !important;
+}
+
+.boss-reroll-btn:hover {
+  background: #9a3aef !important;
+}
+
+.boss-reroll-used {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/* ========== Monster Attack Roll Animation ========== */
+
+/* Container for the attack roll — appended inside #monster-area */
+.monster-attack-roll-area {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(255, 74, 74, 0.06);
+  border: 1px solid rgba(255, 74, 74, 0.2);
+  border-radius: var(--radius-md);
+}
+
+.monster-attack-label {
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: var(--accent-red);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 1px 6px rgba(255, 74, 74, 0.4);
+  animation: attack-label-pulse 0.5s ease-out;
+}
+
+@keyframes attack-label-pulse {
+  0% { transform: scale(0.7); opacity: 0; }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.monster-attack-dice-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.monster-roll-die {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--accent-red);
+  background: var(--bg-card);
+  border: 2px solid rgba(255, 74, 74, 0.3);
+  border-radius: var(--radius-sm);
+}
+
+.monster-roll-die.rolling {
+  animation: enemy-die-shake 0.1s infinite;
+  color: var(--text-dim);
+  border-color: rgba(255, 74, 74, 0.4);
+}
+
+.monster-roll-die.settled {
+  animation: enemy-die-land 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+  box-shadow: 0 0 10px rgba(255, 74, 74, 0.4);
+}
+
+@keyframes enemy-die-shake {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  25%  { transform: translate(-2px, 1px) rotate(-4deg); }
+  50%  { transform: translate(2px, -1px) rotate(3deg); }
+  75%  { transform: translate(-1px, -2px) rotate(-2deg); }
+  100% { transform: translate(1px, 2px) rotate(4deg); }
+}
+
+@keyframes enemy-die-land {
+  0%   { transform: scale(1.4); }
+  50%  { transform: scale(0.85); }
+  100% { transform: scale(1); }
+}
+
+.monster-attack-total {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--accent-red);
+  text-shadow: 0 1px 8px rgba(255, 74, 74, 0.5);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.monster-attack-total.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.monster-attack-total.blocked {
+  color: var(--accent-gold);
+  text-shadow: 0 1px 8px rgba(255, 215, 0, 0.5);
+}
+
+/* ========== Juice & Visual Polish ========== */
+
+/* Screen shake */
+@keyframes screen-shake {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-4px, 2px); }
+  20% { transform: translate(3px, -3px); }
+  30% { transform: translate(-3px, 1px); }
+  40% { transform: translate(2px, -2px); }
+  50% { transform: translate(-2px, 3px); }
+  60% { transform: translate(3px, -1px); }
+  70% { transform: translate(-1px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  90% { transform: translate(-1px, 1px); }
+}
+
+#combat-screen.shaking {
+  animation: screen-shake 0.4s ease-out;
+}
+
+/* Floating damage number */
+.floating-damage {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-weight: 900;
+  font-size: 1.8rem;
+  pointer-events: none;
+  z-index: 50;
+  animation: float-up 1.2s ease-out forwards;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+}
+
+.floating-damage.damage-taken {
+  color: var(--accent-red);
+}
+
+.floating-damage.damage-dealt {
+  color: var(--accent-green);
+}
+
+.floating-damage.damage-exact {
+  color: var(--accent-gold);
+  font-size: 2.2rem;
+}
+
+.floating-damage.damage-blocked {
+  color: var(--text-dim);
+  font-size: 1.4rem;
+}
+
+.floating-damage.gold-earned {
+  color: var(--accent-gold);
+  font-size: 1.4rem;
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(0.5);
+  }
+  15% {
+    transform: translateY(-10px) scale(1.2);
+  }
+  30% {
+    transform: translateY(-20px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-80px) scale(0.8);
+  }
+}
+
+/* Monster death animation */
+.monster-art.dying {
+  animation: monster-die 0.8s ease-out forwards;
+}
+
+@keyframes monster-die {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    filter: none;
+  }
+  30% {
+    transform: scale(1.15);
+    filter: brightness(2) saturate(0);
+  }
+  100% {
+    transform: scale(0) rotate(20deg);
+    opacity: 0;
+    filter: brightness(3) saturate(0);
+  }
+}
+
+/* Monster hit flash */
+.monster-art.hit-flash {
+  animation: monster-hit 0.3s ease-out;
+}
+
+@keyframes monster-hit {
+  0% { filter: brightness(1); }
+  30% { filter: brightness(2.5) saturate(0.3); }
+  100% { filter: brightness(1); }
+}
+
+/* HP bar damage flash */
+.monster-hp-fill.draining {
+  transition: width 600ms ease-out;
+  box-shadow: 0 0 12px rgba(255, 74, 74, 0.6);
+}
+
+/* Target number change animation */
+.monster-target.changed {
+  animation: target-change 0.5s ease-out;
+}
+
+@keyframes target-change {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.3); color: #fff; }
+  100% { transform: scale(1); }
+}
+
+/* Victory flash */
+#combat-screen.victory-flash {
+  animation: victory-bg-flash 0.6s ease-out;
+}
+
+@keyframes victory-bg-flash {
+  0% { background-color: transparent; }
+  20% { background-color: rgba(255, 215, 0, 0.08); }
+  100% { background-color: transparent; }
+}
+
+/* Defeat flash */
+#combat-screen.defeat-flash {
+  animation: defeat-bg-flash 0.6s ease-out;
+}
+
+@keyframes defeat-bg-flash {
+  0% { background-color: transparent; }
+  20% { background-color: rgba(255, 74, 74, 0.08); }
+  100% { background-color: transparent; }
+}

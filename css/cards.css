@@ -1,0 +1,150 @@
+.operator-card {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-color);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+  position: relative;
+}
+
+.operator-card:hover {
+  border-color: var(--accent-blue);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.operator-card.selected {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 12px rgba(74, 158, 255, 0.3);
+  transform: translateY(-3px);
+}
+
+.operator-card.used {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.operator-symbol {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--accent-blue);
+  line-height: 1;
+}
+
+.operator-name {
+  font-size: 0.5rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* Rarity borders */
+.operator-card.rarity-common {
+  border-color: var(--border-color);
+}
+
+.operator-card.rarity-uncommon {
+  border-color: var(--accent-blue);
+}
+
+.operator-card.rarity-uncommon .operator-symbol {
+  color: var(--accent-blue);
+}
+
+.operator-card.rarity-rare {
+  border-color: var(--accent-purple);
+}
+
+.operator-card.rarity-rare .operator-symbol {
+  color: var(--accent-purple);
+}
+
+.operator-card.rarity-legendary {
+  border-color: var(--accent-gold);
+  background: linear-gradient(135deg, var(--bg-card), rgba(255, 215, 0, 0.1));
+}
+
+.operator-card.rarity-legendary .operator-symbol {
+  color: var(--accent-gold);
+}
+
+/* Exotic rarity — sparkle + glow */
+.operator-card.rarity-exotic {
+  border-color: #ff44cc;
+  background: linear-gradient(135deg, var(--bg-card), rgba(255, 68, 204, 0.12));
+  box-shadow: 0 0 10px rgba(255, 68, 204, 0.25), inset 0 0 8px rgba(255, 68, 204, 0.08);
+  animation: exotic-glow 2s ease-in-out infinite alternate;
+  position: relative;
+  overflow: hidden;
+}
+
+.operator-card.rarity-exotic::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgba(255, 68, 204, 0.3) 10%,
+    transparent 20%,
+    rgba(255, 200, 255, 0.2) 30%,
+    transparent 40%,
+    rgba(255, 68, 204, 0.25) 50%,
+    transparent 60%,
+    rgba(255, 200, 255, 0.15) 70%,
+    transparent 80%,
+    rgba(255, 68, 204, 0.2) 90%,
+    transparent 100%
+  );
+  animation: exotic-sparkle 3s linear infinite;
+  pointer-events: none;
+}
+
+.operator-card.rarity-exotic .operator-symbol {
+  color: #ff44cc;
+  text-shadow: 0 0 8px rgba(255, 68, 204, 0.5);
+}
+
+@keyframes exotic-glow {
+  from {
+    box-shadow: 0 0 8px rgba(255, 68, 204, 0.2), inset 0 0 6px rgba(255, 68, 204, 0.05);
+  }
+  to {
+    box-shadow: 0 0 18px rgba(255, 68, 204, 0.4), inset 0 0 12px rgba(255, 68, 204, 0.1);
+  }
+}
+
+@keyframes exotic-sparkle {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Tooltip */
+.card-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  z-index: 100;
+  color: var(--text-primary);
+}
+
+.operator-card:hover .card-tooltip {
+  opacity: 1;
+}
